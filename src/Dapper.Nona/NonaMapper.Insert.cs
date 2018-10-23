@@ -100,7 +100,7 @@ namespace Dapper.Nona
         {
             if (isList && MultiInsertQueryCache.TryGetValue(type.TypeHandle, out var sql)) return sql;
 
-            if (InsertQueryCache.TryGetValue(type.TypeHandle, out sql)) return sql;
+            if (!isList && InsertQueryCache.TryGetValue(type.TypeHandle, out sql)) return sql;
 
             var tableName = Resolvers.Table(type);
             var keyProperty = Resolvers.KeyProperty(type, out var isIdentity);
