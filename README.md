@@ -1,5 +1,7 @@
 # Nona
-Simple CRUD operations for Dapper (Forked)
+Micro ORM that runs on Dapper.
+Thanks to https://github.com/henkmollema/Dommel for the initial idea. We started this project since we don't want to use Entity Framework, we had a look on the market and decided to improve Dommel.
+We decided to create a new repository because we are thinking a different approach and these repositories will be different.
 <hr>
 
 Nona provides a convenient API for CRUD operations using extension methods on the `IDbConnection` interface. The SQL queries are generated based on your POCO entities. Nona also supports LINQ expressions which are being translated to SQL expressions. [Dapper](https://github.com/StackExchange/dapper-dot-net) is used for query execution and object mapping.
