@@ -3,7 +3,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Description>Simple CRUD operations for Dapper.</Description>
     <Copyright>Copyright © Getson Cela, Edmond Shtogu  2018</Copyright>
-    <AssemblyTitle>Dommel.Magic</AssemblyTitle>
+    <AssemblyTitle>Dapper.Nona</AssemblyTitle>
     <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Getson Cela, Edmond Shtogu</Authors>
     <LangVersion>latest</LangVersion>
@@ -12,8 +12,8 @@
     <RepositoryType>git</RepositoryType>
     <DebugType>full</DebugType>
     <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <AssemblyName>Dapper.Dommel</AssemblyName>
-    <RootNamespace>Dapper.DapperExtensions</RootNamespace>
+    <AssemblyName>Dapper.Nona</AssemblyName>
+    <RootNamespace>Dapper.Nona</RootNamespace>
     <PackageId>Dapper.Nona</PackageId>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <RepositoryUrl>https://github.com/getson/Dapper.Nona</RepositoryUrl>
