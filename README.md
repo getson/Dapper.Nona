@@ -3,11 +3,6 @@ Micro ORM that runs on Dapper.
 Thanks to https://github.com/henkmollema/Dommel for the initial idea. We started this project since we don't want to use Entity Framework, we had a look on the market and decided to improve Dommel.
 We decided to create a new repository because we are thinking a different approach and these repositories will be different.
 <hr>
-
-| Windows | Linux | NuGet | MyGet |
-| ------- | ----- | ----- | ----- |
-| [![AppVeyor](https://img.shields.io/appveyor/ci/getson/Dapper.Nona/master.svg?style=flat-square)](https://ci.appveyor.com/project/getson/Dapper.Nona) | [![Travis](https://img.shields.io/travis/getson/Dapper.Nona.svg?style=flat-square)](https://travis-ci.org/getson/Dapper.Nona) | [![NuGet](https://img.shields.io/nuget/vpre/Dapper.Nona.svg?style=flat-square)](https://www.nuget.org/packages/Dapper.Nona) | [![MyGet Pre Release](https://img.shields.io/myget/Dapper.Nona-ci/vpre/DapperNona.svg?style=flat-square)](https://www.myget.org/feed/Dapper.Nona-ci/package/nuget/Dapper.Nona) |
-<hr>
 Nona provides a convenient API for CRUD operations using extension methods on the `IDbConnection` interface. The SQL queries are generated based on your POCO entities. Nona also supports LINQ expressions which are being translated to SQL expressions. [Dapper](https://github.com/StackExchange/dapper-dot-net) is used for query execution and object mapping.
 
 Nona also provides extensibility points to change the behavior of resolving table names, column names, the key property and POCO properties. See [Extensibility](https://github.com/getson/Nona#extensibility) for more details.
