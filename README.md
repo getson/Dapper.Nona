@@ -10,7 +10,6 @@ Nona also provides extensibility points to change the behavior of resolving tabl
 <hr>
 [![Build status](https://ci.appveyor.com/api/projects/status/34ptoeajvubcv95v/branch/master?svg=true)](https://ci.appveyor.com/project/getson/dapper-nona/branch/master)
 
-
 ## Download
 [![Download Nona on NuGet](https://imgur.com/Glo1gZx "Download Dapper.Nona on NuGet")](https://www.nuget.org/packages/Dapper.Nona/)
 
