@@ -8,7 +8,7 @@ Nona provides a convenient API for CRUD operations using extension methods on th
 Nona also provides extensibility points to change the behavior of resolving table names, column names, the key property and POCO properties. See [Extensibility](https://github.com/getson/Nona#extensibility) for more details.
 
 <hr>
-[![Build status](https://ci.appveyor.com/api/projects/status/34ptoeajvubcv95v/branch/master?svg=true)](https://ci.appveyor.com/project/getson/dapper-nona/branch/master)
+|[![Build status](https://ci.appveyor.com/api/projects/status/34ptoeajvubcv95v/branch/master?svg=true)](https://ci.appveyor.com/project/getson/dapper-nona/branch/master)|
 
 ## Download
 [![Download Nona on NuGet](https://imgur.com/Glo1gZx "Download Dapper.Nona on NuGet")](https://www.nuget.org/packages/Dapper.Nona/)
