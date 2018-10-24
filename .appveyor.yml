@@ -20,7 +20,7 @@ deploy:
 - provider: NuGet
   server: https://www.myget.org/F/dapper-nona/api/v2/package
   api_key:
-    secure: iBWnEbxgSBiv6U9ZOWz1aPZ+QJ52rWF6wt8ynE/TRvnpuZlYV8nkD09frCjR83fI
+    secure: 4c8nH3iqQD/z07kTq18XlnDUJ1cufWbYw9AWfj2x+teAE+BE2mgn2hV3jxUGyssi
   skip_symbols: true
   on:
     branch: master
