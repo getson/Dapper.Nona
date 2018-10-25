@@ -37,5 +37,5 @@ else {
     $versionSuffix = $suffix
 }
 
-echo "build: Creating NuGet package with suffix $versionSuffix"
-exec { & dotnet pack .\src\Dapper.Nona\Dapper.Nona.csproj -c Release -o .\artifacts --no-build --version-suffix=$versionSuffix }
+# echo "build: Creating NuGet package with suffix $versionSuffix"
+# exec { & dotnet pack .\src\Dapper.Nona\Dapper.Nona.csproj -c Release -o .\artifacts --no-build --version-suffix=$versionSuffix }

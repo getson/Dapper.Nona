@@ -14,7 +14,7 @@ environment:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
   CI: true
 artifacts:
-- path: .\src\Dapper.Nona\artifacts\**\*.nupkg
+- path: .\src\Dapper.Nona\bin\Release\**\*.nupkg
   name: NuGet
 deploy:
 - provider: NuGet
