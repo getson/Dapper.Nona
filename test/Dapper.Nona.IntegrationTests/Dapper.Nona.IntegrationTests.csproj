@@ -4,7 +4,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>Dapper.Nona.IntegrationTests</AssemblyName>
     <RootNamespace>Dapper.Nona.IntegrationTests</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.0.3</Version>
     <PackageId>Dapper.Nona.IntegrationTests</PackageId>
     <Authors>Dapper.Nona.IntegrationTests</Authors>
     <Company>Dapper.Nona.IntegrationTests</Company>
