@@ -4,6 +4,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>Dapper.Dommel.IntegrationTests</AssemblyName>
     <RootNamespace>Dapper.Dommel.IntegrationTests</RootNamespace>
+    <Version>1.0.1</Version>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Dapper.FluentMap" Version="1.6.0" />
