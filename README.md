@@ -12,7 +12,8 @@ Nona also provides extensibility points to change the behavior of resolving tabl
 | [![AppVeyor](https://ci.appveyor.com/api/projects/status/34ptoeajvubcv95v?svg=true)](https://ci.appveyor.com/project/getson/dapper-nona) | [![NuGet](https://img.shields.io/nuget/vpre/dapper.nona.svg?style=flat-square)](https://www.nuget.org/packages/dapper.nona) | [![MyGet Pre Release](https://img.shields.io/myget/dapper-nona/vpre/Dapper.nona.svg?style=flat-square)](https://www.myget.org/feed/dapper-nona/package/nuget/dapper.nona) |
 
 ## Download
-[![Download Nona on NuGet](https://imgur.com/Glo1gZx "Download Dapper.Nona on NuGet")](https://www.nuget.org/packages/Dapper.Nona/)
+
+Dapper.Nona is available on [NuGet](https://www.nuget.org/packages/Dapper.Nona):
 
 <hr>
 
@@ -53,7 +54,18 @@ using (var con = new SqlConnection())
    int id = con.Insert(product);
 }
 ```
+```csharp
+using (var con = new SqlConnection())
+{
+   var products =new List<Product>
+   {
+        new Product { Name = "Awesome bike", InStock = 4 },
+        new Product { Name = "Awesome bike 2", InStock = 5 }
+   };
 
+   int count = con.Insert(products);
+}
+```
 #### Updating entities
 ```csharp
 using (var con = new SqlConnection())
@@ -63,7 +75,15 @@ using (var con = new SqlConnection())
    con.Update(product);
 }
 ```
-
+```csharp
+using (var con = new SqlConnection())
+{
+   var products = con.Select<Product>(p=>p.Id==1 || p.Id==2).ToList();
+   products[0].LastUpdate = DateTime.Now;
+   products[1].LastUpdate = DateTime.Now;
+   con.Update(products);
+}
+```
 #### Removing entities
 ```csharp
 using (var con = new SqlConnection())
@@ -72,7 +92,13 @@ using (var con = new SqlConnection())
    con.Delete(product);
 }
 ```
-
+```csharp
+using (var con = new SqlConnection())
+{
+   var products = con.Select<Product>(p=>p.Id==1 || p.Id==2);
+   con.Delete(products);
+}
+```
 <hr>
 
 ## Query builders
