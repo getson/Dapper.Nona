@@ -11,8 +11,8 @@ namespace Dapper.Nona.Internal
     /// <summary>
     /// Represents a typed SQL expression.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    internal class SqlExpression<TEntity>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    internal class SqlExpression<T>
     {
         private readonly StringBuilder _whereBuilder = new StringBuilder();
         private readonly DynamicParameters _parameters = new DynamicParameters();
@@ -23,9 +23,9 @@ namespace Dapper.Nona.Internal
         /// </summary>
         /// <param name="expression">The filter expression on the entity.</param>
         /// <returns>
-        /// The current <see cref="SqlExpression{TEntity}" /> instance.
+        /// The current <see cref="SqlExpression{T}" /> instance.
         /// </returns>
-        public virtual SqlExpression<TEntity> Where(Expression<Func<TEntity, bool>> expression)
+        public virtual SqlExpression<T> Where(Expression<Func<T, bool>> expression)
         {
             if (expression != null)
             {

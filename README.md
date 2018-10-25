@@ -141,7 +141,7 @@ Use the `SetColumnNameResolver()` method to register the custom implementation:
 NonaMapper.SetColumnNameResolver(new CustomColumnNameResolver());
 
 ```csharp
-public class ProductMap : NonaEntityMap<TEntity>
+public class ProductMap : NonaEntityMap<T>
 {
     public ProductMap()
     {
@@ -152,11 +152,11 @@ public class ProductMap : NonaEntityMap<TEntity>
 }
 ```
 
-##### `NonaPropertyMap<TEntity>`
-This class derives `PropertyMap<TEntity>` and allows you to specify the key property of an entity using the `IsKey` method:
+##### `NonaPropertyMap<T>`
+This class derives `PropertyMap<T>` and allows you to specify the key property of an entity using the `IsKey` method:
 
 ```csharp
-public class ProductMap : NonaEntityMap<TEntity>
+public class ProductMap : NonaEntityMap<T>
 {
     public ProductMap()
     {
