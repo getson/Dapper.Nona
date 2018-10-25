@@ -1,9 +1,9 @@
+using Dapper.Nona.Internal;
 using System;
 using System.Collections.Concurrent;
 using System.Data;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Dapper.Nona.Internal;
 
 namespace Dapper.Nona
 {
@@ -16,31 +16,32 @@ namespace Dapper.Nona
         /// Deletes the specified entity from the database.
         /// Returns a value indicating whether the operation succeeded.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
-        /// <param name="entity">The entity to be deleted.</param>
+        /// <param name="entity">The entity/list of entities to be deleted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A value indicating whether the delete operation succeeded.</returns>
-        public static bool Delete<TEntity>(this IDbConnection connection, TEntity entity, IDbTransaction transaction = null)
+        public static bool Delete<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null) where T : class
         {
-            var sql = BuildDeleteQuery(typeof(TEntity));
-            LogQuery<TEntity>(sql);
+            var type = TypeHelper.GetConcreteType<T>(out var _);
+            var sql = BuildDeleteQuery(type);
+            LogQuery<T>(sql);
             return connection.Execute(sql, entity, transaction) > 0;
         }
-
         /// <summary>
         /// Deletes the specified entity from the database.
         /// Returns a value indicating whether the operation succeeded.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entity">The entity to be deleted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A value indicating whether the delete operation succeeded.</returns>
-        public static async Task<bool> DeleteAsync<TEntity>(this IDbConnection connection, TEntity entity, IDbTransaction transaction = null)
+        public static async Task<bool> DeleteAsync<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null) where T : class
         {
-            var sql = BuildDeleteQuery(typeof(TEntity));
-            LogQuery<TEntity>(sql);
+            var type = TypeHelper.GetConcreteType<T>(out var _);
+            var sql = BuildDeleteQuery(type);
+            LogQuery<T>(sql);
             return await connection.ExecuteAsync(sql, entity, transaction) > 0;
         }
 
@@ -61,40 +62,40 @@ namespace Dapper.Nona
         }
 
         /// <summary>
-        /// Deletes all entities of type <typeparamref name="TEntity"/> matching the specified predicate from the database.
+        /// Deletes all entities of type <typeparamref name="T"/> matching the specified predicate from the database.
         /// Returns a value indicating whether the operation succeeded.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="predicate">A predicate to filter which entities are deleted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A value indicating whether the delete operation succeeded.</returns>
-        public static bool DeleteMultiple<TEntity>(this IDbConnection connection, Expression<Func<TEntity, bool>> predicate, IDbTransaction transaction = null)
+        public static bool DeleteMultiple<T>(this IDbConnection connection, Expression<Func<T, bool>> predicate, IDbTransaction transaction = null)
         {
             var sql = BuildDeleteMultipleQuery(predicate, out var parameters);
-            LogQuery<TEntity>(sql);
+            LogQuery<T>(sql);
             return connection.Execute(sql, parameters, transaction) > 0;
         }
 
         /// <summary>
-        /// Deletes all entities of type <typeparamref name="TEntity"/> matching the specified predicate from the database.
+        /// Deletes all entities of type <typeparamref name="T"/> matching the specified predicate from the database.
         /// Returns a value indicating whether the operation succeeded.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="predicate">A predicate to filter which entities are deleted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A value indicating whether the delete operation succeeded.</returns>
-        public static async Task<bool> DeleteMultipleAsync<TEntity>(this IDbConnection connection, Expression<Func<TEntity, bool>> predicate, IDbTransaction transaction = null)
+        public static async Task<bool> DeleteMultipleAsync<T>(this IDbConnection connection, Expression<Func<T, bool>> predicate, IDbTransaction transaction = null)
         {
             var sql = BuildDeleteMultipleQuery(predicate, out var parameters);
-            LogQuery<TEntity>(sql);
+            LogQuery<T>(sql);
             return await connection.ExecuteAsync(sql, parameters, transaction) > 0;
         }
 
-        private static string BuildDeleteMultipleQuery<TEntity>(Expression<Func<TEntity, bool>> predicate, out DynamicParameters parameters)
+        private static string BuildDeleteMultipleQuery<T>(Expression<Func<T, bool>> predicate, out DynamicParameters parameters)
         {
-            var type = typeof(TEntity);
+            var type = typeof(T);
             if (!DeleteAllQueryCache.TryGetValue(type.TypeHandle, out var sql))
             {
                 var tableName = Resolvers.Table(type);
@@ -102,39 +103,39 @@ namespace Dapper.Nona
                 DeleteAllQueryCache.TryAdd(type.TypeHandle, sql);
             }
 
-            sql += new SqlExpression<TEntity>()
+            sql += new SqlExpression<T>()
                 .Where(predicate)
                 .ToSql(out parameters);
             return sql;
         }
 
         /// <summary>
-        /// Deletes all entities of type <typeparamref name="TEntity"/> from the database.
+        /// Deletes all entities of type <typeparamref name="T"/> from the database.
         /// Returns a value indicating whether the operation succeeded.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A value indicating whether the delete operation succeeded.</returns>
-        public static bool DeleteAll<TEntity>(this IDbConnection connection, IDbTransaction transaction = null)
+        public static bool DeleteAll<T>(this IDbConnection connection, IDbTransaction transaction = null)
         {
-            var sql = BuildDeleteAllQuery(typeof(TEntity));
-            LogQuery<TEntity>(sql);
+            var sql = BuildDeleteAllQuery(typeof(T));
+            LogQuery<T>(sql);
             return connection.Execute(sql, transaction: transaction) > 0;
         }
 
         /// <summary>
-        /// Deletes all entities of type <typeparamref name="TEntity"/> from the database.
+        /// Deletes all entities of type <typeparamref name="T"/> from the database.
         /// Returns a value indicating whether the operation succeeded.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A value indicating whether the delete operation succeeded.</returns>
-        public static async Task<bool> DeleteAllAsync<TEntity>(this IDbConnection connection, IDbTransaction transaction = null)
+        public static async Task<bool> DeleteAllAsync<T>(this IDbConnection connection, IDbTransaction transaction = null)
         {
-            var sql = BuildDeleteAllQuery(typeof(TEntity));
-            LogQuery<TEntity>(sql);
+            var sql = BuildDeleteAllQuery(typeof(T));
+            LogQuery<T>(sql);
             return await connection.ExecuteAsync(sql, transaction: transaction) > 0;
         }
 

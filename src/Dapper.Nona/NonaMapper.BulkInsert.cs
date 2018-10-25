@@ -24,17 +24,17 @@ namespace Dapper.Nona
         /// <summary>
         /// Inserts the specified entities into the database and returns the id.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entities">The entity to be inserted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>
         /// The id of the inserted entity.
         /// </returns>
-        public static void BulkInsert<TEntity>(this IDbConnection connection, IEnumerable<TEntity> entities, IDbTransaction transaction = null) where TEntity : class
+        public static void BulkInsert<T>(this IDbConnection connection, IEnumerable<T> entities, IDbTransaction transaction = null) where T : class
         {
-            var dataTable = GetBulkInsertDataTable(typeof(TEntity), out var dataTableInfo).Shred(entities, dataTableInfo, null);
-            LogQuery<TEntity>(dataTable.DisplayExpression);
+            var dataTable = GetBulkInsertDataTable(typeof(T), out var dataTableInfo).Shred(entities, dataTableInfo, null);
+            LogQuery<T>(dataTable.DisplayExpression);
 
             using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection))
             {
@@ -46,15 +46,15 @@ namespace Dapper.Nona
         /// <summary>
         /// Inserts the specified entity into the database and returns the id.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entities">The entity to be inserted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>The id of the inserted entity.</returns>
-        public static Task BulkInsertAsync<TEntity>(this IDbConnection connection, IEnumerable<TEntity> entities, IDbTransaction transaction = null) where TEntity : class
+        public static Task BulkInsertAsync<T>(this IDbConnection connection, IEnumerable<T> entities, IDbTransaction transaction = null) where T : class
         {
-            var dataTable = GetBulkInsertDataTable(typeof(TEntity), out var dataTableInfo).Shred(entities, dataTableInfo, null);
-            LogQuery<TEntity>(dataTable.DisplayExpression);
+            var dataTable = GetBulkInsertDataTable(typeof(T), out var dataTableInfo).Shred(entities, dataTableInfo, null);
+            LogQuery<T>(dataTable.DisplayExpression);
 
             Task output;
             using (var bulkCopy = new SqlBulkCopy((SqlConnection)connection))
@@ -117,7 +117,7 @@ namespace Dapper.Nona
         /// <param name="options">Specifies how values from the source sequence will be applied to 
         /// existing rows in the table.</param>
         /// <returns>A DataTable created from the source sequence.</returns>
-        private static DataTable Shred<TEntity>(this DataTable table, IEnumerable<TEntity> source, DataTableInfo tableInfo, LoadOption? options) where TEntity : class
+        private static DataTable Shred<T>(this DataTable table, IEnumerable<T> source, DataTableInfo tableInfo, LoadOption? options) where T : class
         {
             // Enumerate the source sequence and load the object values into rows.
             table.BeginLoadData();
@@ -141,7 +141,7 @@ namespace Dapper.Nona
             return table;
         }
 
-        private static object[] ShredObject<TEntity>(DataTableInfo tableInfo, TEntity instance) where TEntity : class
+        private static object[] ShredObject<T>(DataTableInfo tableInfo, T instance) where T : class
         {
             var values = new object[tableInfo.Columns.Length];
             var index = 0;

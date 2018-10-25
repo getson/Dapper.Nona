@@ -4,7 +4,7 @@
     <IsPackable>false</IsPackable>
     <AssemblyName>Dapper.Nona.IntegrationTests</AssemblyName>
     <RootNamespace>Dapper.Nona.IntegrationTests</RootNamespace>
-    <Version>1.0.1</Version>
+    <Version>1.0.6</Version>
     <PackageId>Dapper.Nona.IntegrationTests</PackageId>
     <Authors>Dapper.Nona.IntegrationTests</Authors>
     <Company>Dapper.Nona.IntegrationTests</Company>
@@ -21,5 +21,15 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Dapper.Nona\Dapper.Nona.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System">
+      <HintPath>System</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="DeleteTests.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 </Project>

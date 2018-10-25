@@ -6,17 +6,17 @@ namespace Dapper.Nona.FluentMapping
     /// <summary>
     /// Represents the typed mapping of an entity for Nona.
     /// </summary>
-    /// <typeparam name="TEntity">The type of an entity.</typeparam>
+    /// <typeparam name="T">The type of an entity.</typeparam>
     /// <seealso>
-    ///     <cref>Dapper.FluentMap.Mapping.EntityMapBase{TEntity, Dapper.Nona.FluentMapping.NonaPropertyMap}</cref>
+    ///     <cref>Dapper.FluentMap.Mapping.EntityMapBase{T, Dapper.Nona.FluentMapping.NonaPropertyMap}</cref>
     /// </seealso>
     /// <seealso cref="INonaEntityMap" />
     /// <inheritdoc>
-    ///     <cref>Dapper.FluentMap.Mapping.EntityMapBase{TEntity, Dapper.Nona.FluentMapping.NonaPropertyMap}</cref>
+    ///     <cref>Dapper.FluentMap.Mapping.EntityMapBase{T, Dapper.Nona.FluentMapping.NonaPropertyMap}</cref>
     ///     <cref>Dapper.Nona.FluentMapping.INonaEntityMap</cref>
     /// </inheritdoc>
-    public abstract class NonaEntityMap<TEntity> : EntityMapBase<TEntity, NonaPropertyMap>, INonaEntityMap
-        where TEntity : class
+    public abstract class NonaEntityMap<T> : EntityMapBase<T, NonaPropertyMap>, INonaEntityMap
+        where T : class
     {
         /// <inheritdoc />
         /// <summary>

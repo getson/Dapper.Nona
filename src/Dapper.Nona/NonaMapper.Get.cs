@@ -12,33 +12,33 @@ namespace Dapper.Nona
         private static readonly ConcurrentDictionary<RuntimeTypeHandle, string> _getAllQueryCache = new ConcurrentDictionary<RuntimeTypeHandle, string>();
 
         /// <summary>
-        /// Retrieves the entity of type <typeparamref name="TEntity"/> with the specified id.
+        /// Retrieves the entity of type <typeparamref name="T"/> with the specified id.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>The entity with the corresponding id.</returns>
-        public static TEntity Get<TEntity>(this IDbConnection connection, object id, IDbTransaction transaction = null) where TEntity : class
+        public static T Get<T>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T : class
         {
-            var sql = BuildGetById(typeof(TEntity), id, out var parameters);
-            LogQuery<TEntity>(sql);
-            return connection.QueryFirstOrDefault<TEntity>(sql, parameters, transaction);
+            var sql = BuildGetById(typeof(T), id, out var parameters);
+            LogQuery<T>(sql);
+            return connection.QueryFirstOrDefault<T>(sql, parameters, transaction);
         }
 
         /// <summary>
-        /// Retrieves the entity of type <typeparamref name="TEntity"/> with the specified id.
+        /// Retrieves the entity of type <typeparamref name="T"/> with the specified id.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>The entity with the corresponding id.</returns>
-        public static Task<TEntity> GetAsync<TEntity>(this IDbConnection connection, object id, IDbTransaction transaction = null) where TEntity : class
+        public static Task<T> GetAsync<T>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T : class
         {
-            var sql = BuildGetById(typeof(TEntity), id, out var parameters);
-            LogQuery<TEntity>(sql);
-            return connection.QueryFirstOrDefaultAsync<TEntity>(sql, parameters, transaction);
+            var sql = BuildGetById(typeof(T), id, out var parameters);
+            LogQuery<T>(sql);
+            return connection.QueryFirstOrDefaultAsync<T>(sql, parameters, transaction);
         }
 
         private static string BuildGetById(Type type, object id, out DynamicParameters parameters)
@@ -60,35 +60,35 @@ namespace Dapper.Nona
         }
 
         /// <summary>
-        /// Retrieves all the entities of type <typeparamref name="TEntity"/>.
+        /// Retrieves all the entities of type <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="buffered">
         /// A value indicating whether the result of the query should be executed directly,
         /// or when the query is materialized (using <c>ToList()</c> for example).
         /// </param>
         /// <param name="transaction">Optional transaction for the command.</param>
-        /// <returns>A collection of entities of type <typeparamref name="TEntity"/>.</returns>
-        public static IEnumerable<TEntity> GetAll<TEntity>(this IDbConnection connection, IDbTransaction transaction = null, bool buffered = true) where TEntity : class
+        /// <returns>A collection of entities of type <typeparamref name="T"/>.</returns>
+        public static IEnumerable<T> GetAll<T>(this IDbConnection connection, IDbTransaction transaction = null, bool buffered = true) where T : class
         {
-            var sql = BuildGetAllQuery(typeof(TEntity));
-            LogQuery<TEntity>(sql);
-            return connection.Query<TEntity>(sql, transaction: transaction, buffered: buffered);
+            var sql = BuildGetAllQuery(typeof(T));
+            LogQuery<T>(sql);
+            return connection.Query<T>(sql, transaction: transaction, buffered: buffered);
         }
 
         /// <summary>
-        /// Retrieves all the entities of type <typeparamref name="TEntity"/>.
+        /// Retrieves all the entities of type <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
-        /// <returns>A collection of entities of type <typeparamref name="TEntity"/>.</returns>
-        public static Task<IEnumerable<TEntity>> GetAllAsync<TEntity>(this IDbConnection connection, IDbTransaction transaction = null) where TEntity : class
+        /// <returns>A collection of entities of type <typeparamref name="T"/>.</returns>
+        public static Task<IEnumerable<T>> GetAllAsync<T>(this IDbConnection connection, IDbTransaction transaction = null) where T : class
         {
-            var sql = BuildGetAllQuery(typeof(TEntity));
-            LogQuery<TEntity>(sql);
-            return connection.QueryAsync<TEntity>(sql, transaction: transaction);
+            var sql = BuildGetAllQuery(typeof(T));
+            LogQuery<T>(sql);
+            return connection.QueryAsync<T>(sql, transaction: transaction);
         }
 
         private static string BuildGetAllQuery(Type type)
@@ -103,9 +103,9 @@ namespace Dapper.Nona
         }
 
         /// <summary>
-        /// Retrieves a paged set of entities of type <typeparamref name="TEntity"/>.
+        /// Retrieves a paged set of entities of type <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="pageNumber">The number of the page to fetch, starting at 1.</param>
         /// <param name="pageSize">The page size.</param>
@@ -114,28 +114,28 @@ namespace Dapper.Nona
         /// or when the query is materialized (using <c>ToList()</c> for example).
         /// </param>
         /// <param name="transaction">Optional transaction for the command.</param>
-        /// <returns>A paged collection of entities of type <typeparamref name="TEntity"/>.</returns>
-        public static IEnumerable<TEntity> GetPaged<TEntity>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null, bool buffered = true) where TEntity : class
+        /// <returns>A paged collection of entities of type <typeparamref name="T"/>.</returns>
+        public static IEnumerable<T> GetPaged<T>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null, bool buffered = true) where T : class
         {
-            var sql = BuildPagedQuery(connection, typeof(TEntity), pageNumber, pageSize);
-            LogQuery<TEntity>(sql);
-            return connection.Query<TEntity>(sql, transaction: transaction, buffered: buffered);
+            var sql = BuildPagedQuery(connection, typeof(T), pageNumber, pageSize);
+            LogQuery<T>(sql);
+            return connection.Query<T>(sql, transaction: transaction, buffered: buffered);
         }
 
         /// <summary>
-        /// Retrieves a paged set of entities of type <typeparamref name="TEntity"/>.
+        /// Retrieves a paged set of entities of type <typeparamref name="T"/>.
         /// </summary>
-        /// <typeparam name="TEntity">The type of the entity.</typeparam>
+        /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="pageNumber">The number of the page to fetch, starting at 1.</param>
         /// <param name="pageSize">The page size.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
-        /// <returns>A paged collection of entities of type <typeparamref name="TEntity"/>.</returns>
-        public static Task<IEnumerable<TEntity>> GetPagedAsync<TEntity>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null) where TEntity : class
+        /// <returns>A paged collection of entities of type <typeparamref name="T"/>.</returns>
+        public static Task<IEnumerable<T>> GetPagedAsync<T>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null) where T : class
         {
-            var sql = BuildPagedQuery(connection, typeof(TEntity), pageNumber, pageSize);
-            LogQuery<TEntity>(sql);
-            return connection.QueryAsync<TEntity>(sql, transaction: transaction);
+            var sql = BuildPagedQuery(connection, typeof(T), pageNumber, pageSize);
+            LogQuery<T>(sql);
+            return connection.QueryAsync<T>(sql, transaction: transaction);
         }
 
         private static string BuildPagedQuery(IDbConnection connection, Type type, int pageNumber, int pageSize)
