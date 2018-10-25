@@ -9,7 +9,7 @@ Nona also provides extensibility points to change the behavior of resolving tabl
 
 | Windows | NuGet | MyGet |
 | ------- | ----- | ----- |
-| [![AppVeyor](https://ci.appveyor.com/api/projects/status/34ptoeajvubcv95v?svg=true)](https://ci.appveyor.com/project/getson/dapper-nona)|
+| [![AppVeyor](https://ci.appveyor.com/api/projects/status/34ptoeajvubcv95v?svg=true)](https://ci.appveyor.com/project/getson/dapper-nona) | [![NuGet](https://img.shields.io/nuget/vpre/dapper.nona.svg?style=flat-square)](https://www.nuget.org/packages/dapper.nona) | [![MyGet Pre Release](https://img.shields.io/myget/dapper-nona/vpre/Dapper.nona.svg?style=flat-square)](https://www.myget.org/feed/dapper-nona/package/nuget/dapper.nona) |
 
 ## Download
 [![Download Nona on NuGet](https://imgur.com/Glo1gZx "Download Dapper.Nona on NuGet")](https://www.nuget.org/packages/Dapper.Nona/)
