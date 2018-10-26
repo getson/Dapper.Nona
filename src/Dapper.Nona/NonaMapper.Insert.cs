@@ -20,8 +20,9 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entity">The entity/list of entity to be inserted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The id of the inserted entity.</returns>
-        public static object Insert<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null) where T : class
+        public static object Insert<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var type = TypeHelper.GetConcreteType<T>(out var isList);
 
@@ -31,10 +32,10 @@ namespace Dapper.Nona
             if (isList)
             {
                 //return the number of inserted rows
-                return connection.Execute(sql, entity, transaction);
+                return connection.Execute(sql, entity, transaction,commandTimeout);
             }
             //get the new id and assign to the key property
-            var newId = connection.ExecuteScalar(sql, entity, transaction);
+            var newId = connection.ExecuteScalar(sql, entity, transaction,commandTimeout);
             var identity = Resolvers.KeyProperty(type);
             if (identity != null)
             {
@@ -50,8 +51,9 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entity">The entity to be inserted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The id of the inserted entity.</returns>
-        public static async Task<object> InsertAsync<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null) where T : class
+        public static async Task<object> InsertAsync<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null,int? commandTimeout=null) where T : class
         {
             var type = TypeHelper.GetConcreteType<T>(out var isList);
             var sql = BuildInsertQuery(connection, type, isList);
@@ -60,10 +62,10 @@ namespace Dapper.Nona
             if (isList)
             {
                 //return the number of inserted rows
-                return await connection.ExecuteAsync(sql, entity, transaction);
+                return await connection.ExecuteAsync(sql, entity, transaction,commandTimeout);
             }
             //get the new id and assign to the key property
-            var newId = await connection.ExecuteScalarAsync(sql, entity, transaction);
+            var newId = await connection.ExecuteScalarAsync(sql, entity, transaction,commandTimeout);
             var identity = Resolvers.KeyProperty(type);
             if (identity != null)
             {

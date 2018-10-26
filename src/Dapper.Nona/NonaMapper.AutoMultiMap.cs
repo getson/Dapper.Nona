@@ -19,14 +19,16 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
-        public static async Task<TReturn> GetAsync<T1, T2, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T1 : TReturn
+        public static async Task<TReturn> GetAsync<T1, T2, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T1 : TReturn
         {
             return (await MultiMapAsync<T1, T2, DontMap, DontMap, DontMap, DontMap, DontMap, TReturn>(
                                connection,
                                CreateMapDelegate<T1, T2, DontMap, DontMap, DontMap, DontMap, DontMap, TReturn>(),
                                id,
-                               transaction))
+                               transaction,
+                               commandTimeout:commandTimeout))
                            .FirstOrDefault();
         }
 
@@ -41,14 +43,15 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
-        public static async Task<TReturn> GetAsync<T1, T2, T3, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T1 : TReturn
+        public static async Task<TReturn> GetAsync<T1, T2, T3, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T1 : TReturn
         {
             return (await MultiMapAsync<T1, T2, T3, DontMap, DontMap, DontMap, DontMap, TReturn>(
                                connection,
                                CreateMapDelegate<T1, T2, T3, DontMap, DontMap, DontMap, DontMap, TReturn>(),
                                id,
-                               transaction))
+                               transaction, commandTimeout:commandTimeout))
                            .FirstOrDefault();
         }
 
@@ -64,14 +67,15 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
-        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T1 : TReturn
+        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T1 : TReturn
         {
             return (await MultiMapAsync<T1, T2, T3, T4, DontMap, DontMap, DontMap, TReturn>(
                                connection,
                                CreateMapDelegate<T1, T2, T3, T4, DontMap, DontMap, DontMap, TReturn>(),
                                id,
-                               transaction))
+                               transaction, commandTimeout:commandTimeout))
                            .FirstOrDefault();
         }
 
@@ -88,14 +92,16 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
-        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T1 : TReturn
+        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T1 : TReturn
         {
             return (await MultiMapAsync<T1, T2, T3, T4, T5, DontMap, DontMap, TReturn>(
                                connection,
                                CreateMapDelegate<T1, T2, T3, T4, T5, DontMap, DontMap, TReturn>(),
                                id,
-                               transaction))
+                               transaction,
+                              commandTimeout:commandTimeout))
                            .FirstOrDefault();
         }
 
@@ -113,14 +119,16 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
-        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, T6, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T1 : TReturn
+        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, T6, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T1 : TReturn
         {
             return (await MultiMapAsync<T1, T2, T3, T4, T5, T6, DontMap, TReturn>(
                                connection,
                                CreateMapDelegate<T1, T2, T3, T4, T5, T6, DontMap, TReturn>(),
                                id,
-                               transaction))
+                               transaction,
+                               commandTimeout:commandTimeout))
                            .FirstOrDefault();
         }
 
@@ -139,14 +147,15 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
-        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T1 : TReturn
+        public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T1 : TReturn
         {
             return (await MultiMapAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(
                                connection,
                                CreateMapDelegate<T1, T2, T3, T4, T5, T6, T7, TReturn>(),
                                id,
-                               transaction))
+                               transaction, commandTimeout:commandTimeout))
                            .FirstOrDefault();
         }
 
@@ -290,7 +299,7 @@ namespace Dapper.Nona
                 }
                 else if (value is ICollection<T> collection && !collection.Contains(instance))
                 {
-                    collection.Add(instance);                    
+                    collection.Add(instance);
                 }
             }
         }

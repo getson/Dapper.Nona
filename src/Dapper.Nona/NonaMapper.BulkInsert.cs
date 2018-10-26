@@ -28,10 +28,11 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entities">The entity to be inserted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>
         /// The id of the inserted entity.
         /// </returns>
-        public static void BulkInsert<T>(this IDbConnection connection, IEnumerable<T> entities, IDbTransaction transaction = null) where T : class
+        public static void BulkInsert<T>(this IDbConnection connection, IEnumerable<T> entities, IDbTransaction transaction = null,  int? commandTimeout = null) where T : class
         {
             var dataTable = GetBulkInsertDataTable(typeof(T), out var dataTableInfo).Shred(entities, dataTableInfo, null);
             LogQuery<T>(dataTable.DisplayExpression);
@@ -50,8 +51,9 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entities">The entity to be inserted.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The id of the inserted entity.</returns>
-        public static Task BulkInsertAsync<T>(this IDbConnection connection, IEnumerable<T> entities, IDbTransaction transaction = null) where T : class
+        public static Task BulkInsertAsync<T>(this IDbConnection connection, IEnumerable<T> entities, IDbTransaction transaction = null,  int? commandTimeout = null) where T : class
         {
             var dataTable = GetBulkInsertDataTable(typeof(T), out var dataTableInfo).Shred(entities, dataTableInfo, null);
             LogQuery<T>(dataTable.DisplayExpression);

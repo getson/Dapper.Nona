@@ -18,12 +18,13 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="predicate">A predicate to filter the results.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The number of entities matching the specified predicate.</returns>
-        public static long Count<T>(this IDbConnection connection, Expression<Func<T, bool>> predicate, IDbTransaction transaction = null)
+        public static long Count<T>(this IDbConnection connection, Expression<Func<T, bool>> predicate, IDbTransaction transaction = null,  int? commandTimeout = null)
         {
             var sql = BuildCountSql(predicate, out var parameters);
             LogQuery<T>(sql);
-            return connection.ExecuteScalar<long>(sql, parameters, transaction);
+            return connection.ExecuteScalar<long>(sql, parameters, transaction,commandTimeout);
         }
 
         /// <summary>
@@ -33,12 +34,13 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="predicate">A predicate to filter the results.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The number of entities matching the specified predicate.</returns>
-        public static Task<long> CountAsync<T>(this IDbConnection connection, Expression<Func<T, bool>> predicate, IDbTransaction transaction = null)
+        public static Task<long> CountAsync<T>(this IDbConnection connection, Expression<Func<T, bool>> predicate, IDbTransaction transaction = null,  int? commandTimeout = null)
         {
             var sql = BuildCountSql(predicate, out var parameters);
             LogQuery<T>(sql);
-            return connection.ExecuteScalarAsync<long>(sql, parameters, transaction);
+            return connection.ExecuteScalarAsync<long>(sql, parameters, transaction,commandTimeout);
         }
 
         private static string BuildCountSql<T>(Expression<Func<T, bool>> predicate, out DynamicParameters parameters)

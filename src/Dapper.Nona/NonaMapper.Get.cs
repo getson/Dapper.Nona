@@ -18,12 +18,13 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id.</returns>
-        public static T Get<T>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T : class
+        public static T Get<T>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var sql = BuildGetById(typeof(T), id, out var parameters);
             LogQuery<T>(sql);
-            return connection.QueryFirstOrDefault<T>(sql, parameters, transaction);
+            return connection.QueryFirstOrDefault<T>(sql, parameters, transaction,commandTimeout);
         }
 
         /// <summary>
@@ -33,12 +34,13 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id.</returns>
-        public static Task<T> GetAsync<T>(this IDbConnection connection, object id, IDbTransaction transaction = null) where T : class
+        public static Task<T> GetAsync<T>(this IDbConnection connection, object id, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var sql = BuildGetById(typeof(T), id, out var parameters);
             LogQuery<T>(sql);
-            return connection.QueryFirstOrDefaultAsync<T>(sql, parameters, transaction);
+            return connection.QueryFirstOrDefaultAsync<T>(sql, parameters, transaction,commandTimeout);
         }
 
         private static string BuildGetById(Type type, object id, out DynamicParameters parameters)
@@ -68,13 +70,14 @@ namespace Dapper.Nona
         /// A value indicating whether the result of the query should be executed directly,
         /// or when the query is materialized (using <c>ToList()</c> for example).
         /// </param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A collection of entities of type <typeparamref name="T"/>.</returns>
-        public static IEnumerable<T> GetAll<T>(this IDbConnection connection, IDbTransaction transaction = null, bool buffered = true) where T : class
+        public static IEnumerable<T> GetAll<T>(this IDbConnection connection, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null) where T : class
         {
             var sql = BuildGetAllQuery(typeof(T));
             LogQuery<T>(sql);
-            return connection.Query<T>(sql, transaction: transaction, buffered: buffered);
+            return connection.Query<T>(sql, transaction: transaction, buffered: buffered,commandTimeout:commandTimeout);
         }
 
         /// <summary>
@@ -83,12 +86,13 @@ namespace Dapper.Nona
         /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>A collection of entities of type <typeparamref name="T"/>.</returns>
-        public static Task<IEnumerable<T>> GetAllAsync<T>(this IDbConnection connection, IDbTransaction transaction = null) where T : class
+        public static Task<IEnumerable<T>> GetAllAsync<T>(this IDbConnection connection, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var sql = BuildGetAllQuery(typeof(T));
             LogQuery<T>(sql);
-            return connection.QueryAsync<T>(sql, transaction: transaction);
+            return connection.QueryAsync<T>(sql, transaction: transaction,commandTimeout:commandTimeout);
         }
 
         private static string BuildGetAllQuery(Type type)
@@ -113,13 +117,14 @@ namespace Dapper.Nona
         /// A value indicating whether the result of the query should be executed directly,
         /// or when the query is materialized (using <c>ToList()</c> for example).
         /// </param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <param name="transaction">Optional transaction for the command.</param>
         /// <returns>A paged collection of entities of type <typeparamref name="T"/>.</returns>
-        public static IEnumerable<T> GetPaged<T>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null, bool buffered = true) where T : class
+        public static IEnumerable<T> GetPaged<T>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null, bool buffered = true, int? commandTimeout = null) where T : class
         {
             var sql = BuildPagedQuery(connection, typeof(T), pageNumber, pageSize);
             LogQuery<T>(sql);
-            return connection.Query<T>(sql, transaction: transaction, buffered: buffered);
+            return connection.Query<T>(sql, transaction: transaction, buffered: buffered,commandTimeout:commandTimeout);
         }
 
         /// <summary>
@@ -130,12 +135,13 @@ namespace Dapper.Nona
         /// <param name="pageNumber">The number of the page to fetch, starting at 1.</param>
         /// <param name="pageSize">The page size.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>A paged collection of entities of type <typeparamref name="T"/>.</returns>
-        public static Task<IEnumerable<T>> GetPagedAsync<T>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null) where T : class
+        public static Task<IEnumerable<T>> GetPagedAsync<T>(this IDbConnection connection, int pageNumber, int pageSize, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var sql = BuildPagedQuery(connection, typeof(T), pageNumber, pageSize);
             LogQuery<T>(sql);
-            return connection.QueryAsync<T>(sql, transaction: transaction);
+            return connection.QueryAsync<T>(sql, transaction: transaction,commandTimeout:commandTimeout);
         }
 
         private static string BuildPagedQuery(IDbConnection connection, Type type, int pageNumber, int pageSize)

@@ -19,13 +19,14 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entity">The entity in the database.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>A value indicating whether the update operation succeeded.</returns>
-        public static bool Update<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null) where T : class
+        public static bool Update<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var type = TypeHelper.GetConcreteType<T>(out var _);
             var sql = BuildUpdateQuery(type);
             LogQuery<T>(sql);
-            return connection.Execute(sql, entity, transaction) > 0;
+            return connection.Execute(sql, entity, transaction,commandTimeout) > 0;
         }
 
         /// <summary>
@@ -36,13 +37,14 @@ namespace Dapper.Nona
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
         /// <param name="entity">The entity/list of entity in the database</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>A value indicating whether the update operation succeeded.</returns>
-        public static async Task<bool> UpdateAsync<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null) where T : class
+        public static async Task<bool> UpdateAsync<T>(this IDbConnection connection, T entity, IDbTransaction transaction = null, int? commandTimeout = null) where T : class
         {
             var type = TypeHelper.GetConcreteType<T>(out var _);
             var sql = BuildUpdateQuery(type);
             LogQuery<T>(sql);
-            return await connection.ExecuteAsync(sql, entity, transaction) > 0;
+            return await connection.ExecuteAsync(sql, entity, transaction,commandTimeout) > 0;
         }
 
         private static string BuildUpdateQuery(Type type)

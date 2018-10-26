@@ -20,14 +20,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static TReturn Get<T1, T2, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return MultiMap<T1, T2, DontMap, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction).FirstOrDefault();
+            return MultiMap<T1, T2, DontMap, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout).FirstOrDefault();
         }
 
         /// <summary>
@@ -41,14 +42,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static async Task<TReturn> GetAsync<T1, T2, TReturn>(
             this IDbConnection connection,
             Func<T1, T2, TReturn> map,
             object id,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return (await MultiMapAsync<T1, T2, DontMap, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction)).FirstOrDefault();
+            return (await MultiMapAsync<T1, T2, DontMap, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout)).FirstOrDefault();
         }
 
         /// <summary>
@@ -63,14 +65,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static TReturn Get<T1, T2, T3, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return MultiMap<T1, T2, T3, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction).FirstOrDefault();
+            return MultiMap<T1, T2, T3, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout).FirstOrDefault();
         }
 
         /// <summary>
@@ -85,14 +88,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static async Task<TReturn> GetAsync<T1, T2, T3, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return (await MultiMapAsync<T1, T2, T3, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction)).FirstOrDefault();
+            return (await MultiMapAsync<T1, T2, T3, DontMap, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout)).FirstOrDefault();
         }
 
         /// <summary>
@@ -108,14 +112,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static TReturn Get<T1, T2, T3, T4, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return MultiMap<T1, T2, T3, T4, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction).FirstOrDefault();
+            return MultiMap<T1, T2, T3, T4, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout).FirstOrDefault();
         }
 
         /// <summary>
@@ -131,14 +136,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static async Task<TReturn> GetAsync<T1, T2, T3, T4, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return (await MultiMapAsync<T1, T2, T3, T4, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction)).FirstOrDefault();
+            return (await MultiMapAsync<T1, T2, T3, T4, DontMap, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout)).FirstOrDefault();
         }
 
         /// <summary>
@@ -155,14 +161,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static TReturn Get<T1, T2, T3, T4, T5, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, T5, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return MultiMap<T1, T2, T3, T4, T5, DontMap, DontMap, TReturn>(connection, map, id, transaction).FirstOrDefault();
+            return MultiMap<T1, T2, T3, T4, T5, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout).FirstOrDefault();
         }
 
         /// <summary>
@@ -179,14 +186,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, T5, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return (await MultiMapAsync<T1, T2, T3, T4, T5, DontMap, DontMap, TReturn>(connection, map, id, transaction)).FirstOrDefault();
+            return (await MultiMapAsync<T1, T2, T3, T4, T5, DontMap, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout)).FirstOrDefault();
         }
 
         /// <summary>
@@ -204,14 +212,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static TReturn Get<T1, T2, T3, T4, T5, T6, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, T5, T6, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return MultiMap<T1, T2, T3, T4, T5, T6, DontMap, TReturn>(connection, map, id, transaction).FirstOrDefault();
+            return MultiMap<T1, T2, T3, T4, T5, T6, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout).FirstOrDefault();
         }
 
         /// <summary>
@@ -229,14 +238,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, T6, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, T5, T6, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return (await MultiMapAsync<T1, T2, T3, T4, T5, T6, DontMap, TReturn>(connection, map, id, transaction)).FirstOrDefault();
+            return (await MultiMapAsync<T1, T2, T3, T4, T5, T6, DontMap, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout)).FirstOrDefault();
         }
 
         /// <summary>
@@ -255,14 +265,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static TReturn Get<T1, T2, T3, T4, T5, T6, T7, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, T5, T6, T7, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return MultiMap<T1, T2, T3, T4, T5, T6, T7, TReturn>(connection, map, id, transaction).FirstOrDefault();
+            return MultiMap<T1, T2, T3, T4, T5, T6, T7, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout).FirstOrDefault();
         }
 
         /// <summary>
@@ -281,14 +292,15 @@ namespace Dapper.Nona
         /// <param name="id">The id of the entity in the database.</param>
         /// <param name="map">The mapping to perform on the entities in the result set.</param>
         /// <param name="transaction">Optional transaction for the command.</param>
+        /// <param name="commandTimeout">The command timeout (in seconds).</param>
         /// <returns>The entity with the corresponding id joined with the specified types.</returns>
         public static async Task<TReturn> GetAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(
             this IDbConnection connection,
             object id,
             Func<T1, T2, T3, T4, T5, T6, T7, TReturn> map,
-            IDbTransaction transaction = null)
+            IDbTransaction transaction = null,  int? commandTimeout = null)
         {
-            return (await MultiMapAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(connection, map, id, transaction)).FirstOrDefault();
+            return (await MultiMapAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(connection, map, id, transaction,commandTimeout:commandTimeout)).FirstOrDefault();
         }
 
         /// <summary>
@@ -645,7 +657,7 @@ namespace Dapper.Nona
             return MultiMapAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(connection, map, null, transaction, buffered);
         }
 
-        private static IEnumerable<TReturn> MultiMap<T1, T2, T3, T4, T5, T6, T7, TReturn>(IDbConnection connection, Delegate map, object id, IDbTransaction transaction, bool buffered = true)
+        private static IEnumerable<TReturn> MultiMap<T1, T2, T3, T4, T5, T6, T7, TReturn>(IDbConnection connection, Delegate map, object id, IDbTransaction transaction, bool buffered = true,int? commandTimeout=null)
         {
             var resultType = typeof(TReturn);
             var includeTypes = new[]
@@ -683,7 +695,7 @@ namespace Dapper.Nona
             throw new InvalidOperationException($"Invalid amount of include types: {includeTypes.Length}.");
         }
 
-        private static Task<IEnumerable<TReturn>> MultiMapAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(IDbConnection connection, Delegate map, object id, IDbTransaction transaction, bool buffered = true)
+        private static Task<IEnumerable<TReturn>> MultiMapAsync<T1, T2, T3, T4, T5, T6, T7, TReturn>(IDbConnection connection, Delegate map, object id, IDbTransaction transaction, bool buffered = true, int? commandTimeout = null)
         {
             var resultType = typeof(TReturn);
             var includeTypes = new[]
