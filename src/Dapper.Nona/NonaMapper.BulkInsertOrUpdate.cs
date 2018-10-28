@@ -11,7 +11,7 @@ namespace Dapper.Nona
     public static partial class NonaMapper
     {
         /// <summary>
-        /// Inserts the specified entities into the database and returns the id.
+        /// Inserts or updates the specified entities into the database.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
@@ -117,7 +117,7 @@ namespace Dapper.Nona
         }
 
         /// <summary>
-        /// Inserts the specified entity into the database and returns the id.
+        /// Inserts or updates the specified entities into the database async.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
