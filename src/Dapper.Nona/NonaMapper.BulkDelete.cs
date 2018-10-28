@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Dapper.Nona
@@ -10,7 +11,7 @@ namespace Dapper.Nona
     public static partial class NonaMapper
     {
         /// <summary>
-        /// Inserts the specified entities into the database and returns the id.
+        /// Deletes the specified entities into the database.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
@@ -21,7 +22,7 @@ namespace Dapper.Nona
         /// <param name="bulkCopyBatchSize">Size of the bulk copy batch.</param>
         /// <param name="bulkCopyNotifyAfter">The bulk copy notify after.</param>
         /// <param name="bulkCopyEnableStreaming">if set to <c>true</c> [bulk copy enable streaming].</param>
-        public static void BulkInsert<TEntity>(
+        public static void BulkDelete<TEntity>(
             this IDbConnection connection,
             IEnumerable<TEntity> entities,
             IDbTransaction transaction = null,
@@ -33,25 +34,34 @@ namespace Dapper.Nona
             ) where TEntity : class
         {
             if (!entities.Any()) return;
-            
-            var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null);
+
+            var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null, identifierOnly: true);
 
             var sqlConnection = (SqlConnection)connection;
             sqlConnection.Open();
 
             if (transaction == null) transaction = connection.BeginTransaction();
 
-            using (var bulkCopy = new SqlBulkCopy(sqlConnection, sqlBulkCopyOptions, (SqlTransaction)transaction))
+            using (var trans = (SqlTransaction)transaction)
             {
                 try
                 {
-                    bulkCopy.DestinationTableName = bulkMetadata.Name;
-                    bulkCopy.SetSettings(bulkCopyEnableStreaming, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyTimeout, rowsCopiedHandler);
-
-                    bulkCopy.WriteToServer(dataTable);
-
+                    var command = sqlConnection.CreateCommand();
+                    command.Connection = sqlConnection;
+                    command.Transaction = trans;
+                    command.CommandTimeout = 600;
+                    CheckTemporaryTableQuery(connection, transaction, bulkMetadata, false);
+                    //Creating temp table on database
+                    command.CommandText = bulkMetadata.TempTableQuery;
+                    command.ExecuteNonQuery();
+                    //Bulk copy into temp table
+                    BulkCopy<TEntity>(sqlConnection, (SqlTransaction)transaction, dataTable, sqlBulkCopyOptions,
+                        bulkMetadata.Name, bulkCopyTimeout, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyEnableStreaming);
+                    // Updating destination table, and dropping temp table
+                    CheckDeleteTableQuery(bulkMetadata);
+                    command.CommandText = bulkMetadata.DeleteQuery;
+                    command.ExecuteNonQuery();
                     transaction.Commit();
-                    bulkCopy.Close();
                 }
                 catch (Exception)
                 {
@@ -63,12 +73,10 @@ namespace Dapper.Nona
                     sqlConnection.Close();
                 }
             }
-
-            void rowsCopiedHandler(object sender, SqlRowsCopiedEventArgs eventArgs) => LogQuery<TEntity>("Inserted " + eventArgs.RowsCopied + " records.");
         }
 
         /// <summary>
-        /// Inserts the specified entity into the database and returns the id.
+        /// Deletes the specified entities into the database asynchronous.
         /// </summary>
         /// <typeparam name="TEntity">The type of the entity.</typeparam>
         /// <param name="connection">The connection to the database. This can either be open or closed.</param>
@@ -79,10 +87,8 @@ namespace Dapper.Nona
         /// <param name="bulkCopyBatchSize">Size of the bulk copy batch.</param>
         /// <param name="bulkCopyNotifyAfter">The bulk copy notify after.</param>
         /// <param name="bulkCopyEnableStreaming">if set to <c>true</c> [bulk copy enable streaming].</param>
-        /// <returns>
-        /// The id of the inserted entity.
-        /// </returns>
-        public static async Task BulkInsertAsync<TEntity>(
+        /// <returns></returns>
+        public static async Task BulkDeleteAsync<TEntity>(
             this IDbConnection connection,
             IEnumerable<TEntity> entities,
             IDbTransaction transaction = null,
@@ -95,24 +101,33 @@ namespace Dapper.Nona
         {
             if (!entities.Any()) return;
 
-            var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null);
+            var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null, identifierOnly: true);
 
             var sqlConnection = (SqlConnection)connection;
             sqlConnection.Open();
 
             if (transaction == null) transaction = connection.BeginTransaction();
 
-            using (var bulkCopy = new SqlBulkCopy(sqlConnection, sqlBulkCopyOptions, (SqlTransaction)transaction))
+            using (var trans = (SqlTransaction)transaction)
             {
                 try
                 {
-                    bulkCopy.DestinationTableName = bulkMetadata.Name;
-                    bulkCopy.SetSettings(bulkCopyEnableStreaming, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyTimeout, rowsCopiedHandler);
-
-                    await bulkCopy.WriteToServerAsync(dataTable);
-
+                    var command = sqlConnection.CreateCommand();
+                    command.Connection = sqlConnection;
+                    command.Transaction = trans;
+                    command.CommandTimeout = 600;
+                    CheckTemporaryTableQuery(connection, transaction, bulkMetadata, false);
+                    //Creating temp table on database
+                    command.CommandText = bulkMetadata.TempTableQuery;
+                    await command.ExecuteNonQueryAsync();
+                    //Bulk copy into temp table
+                    await BulkCopyAsync<TEntity>(sqlConnection, (SqlTransaction)transaction, dataTable, sqlBulkCopyOptions,
+                        bulkMetadata.Name, bulkCopyTimeout, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyEnableStreaming);
+                    // Updating destination table, and dropping temp table
+                    CheckDeleteTableQuery(bulkMetadata);
+                    command.CommandText = bulkMetadata.DeleteQuery;
+                    await command.ExecuteNonQueryAsync();
                     transaction.Commit();
-                    bulkCopy.Close();
                 }
                 catch (Exception)
                 {
@@ -124,8 +139,6 @@ namespace Dapper.Nona
                     sqlConnection.Close();
                 }
             }
-
-            void rowsCopiedHandler(object sender, SqlRowsCopiedEventArgs eventArgs) => LogQuery<TEntity>("Inserted " + eventArgs.RowsCopied + " records.");
         }
     }
 }

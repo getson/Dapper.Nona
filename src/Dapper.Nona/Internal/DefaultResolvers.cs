@@ -14,6 +14,11 @@ namespace Dapper.Nona.Internal
         internal static readonly IColumnNameResolver ColumnNameResolver = new DefaultColumnNameResolver();
 
         /// <summary>
+        /// The default column name resolver.
+        /// </summary>
+        internal static readonly IDataColumnResolver DataColumnResolver = new DefaultDataColumnResolver();
+
+        /// <summary>
         /// The default property resolver.
         /// </summary>
         internal static readonly IPropertyResolver PropertyResolver = new DefaultPropertyResolver();

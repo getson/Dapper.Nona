@@ -60,7 +60,7 @@ namespace Dapper.Nona
         {
             private static readonly ConcurrentDictionary<RuntimeTypeHandle, string> TypeTableNameCache = new ConcurrentDictionary<RuntimeTypeHandle, string>();
             private static readonly ConcurrentDictionary<string, string> ColumnNameCache = new ConcurrentDictionary<string, string>();
-            private static readonly ConcurrentDictionary<string, DataColumn> DataColumnCache = new ConcurrentDictionary<string, DataColumn>();
+            private static readonly ConcurrentDictionary<string, Tuple<string, Type>> DataColumnCache = new ConcurrentDictionary<string, Tuple<string, Type>>();
 
             private static readonly ConcurrentDictionary<RuntimeTypeHandle, KeyPropertyInfo> TypeKeyPropertyCache = new ConcurrentDictionary<RuntimeTypeHandle, KeyPropertyInfo>();
             private static readonly ConcurrentDictionary<RuntimeTypeHandle, NonaProperty[]> TypePropertiesCache = new ConcurrentDictionary<RuntimeTypeHandle, NonaProperty[]>();
@@ -190,20 +190,16 @@ namespace Dapper.Nona
             /// </summary>
             /// <param name="propertyInfo">The <see cref="NonaProperty"/> to get the data column for.</param>
             /// <returns>The data column for <paramref name="propertyInfo"/>.</returns>
-            public static DataColumn DataColumn(NonaProperty propertyInfo)
+            public static Tuple<string, Type> DataColumn(NonaProperty propertyInfo)
             {
                 var key = propertyInfo.PropertyKey;
                 if (!DataColumnCache.TryGetValue(key, out var column))
                 {
                     column = _dataColumnResolver.ResolveDataColumn(propertyInfo);
-                    if (EscapeCharacterStart != char.MinValue || EscapeCharacterEnd != char.MinValue)
-                    {
-                        column.ColumnName = EscapeCharacterStart + column.ColumnName + EscapeCharacterEnd;
-                    }
                     DataColumnCache.TryAdd(key, column);
                 }
 
-                LogReceived?.Invoke($"Resolved column name '{column.ColumnName}' for '{propertyInfo.PropertyInfo}'");
+                LogReceived?.Invoke($"Resolved column name '{column.Item1}' for '{propertyInfo.PropertyInfo}'");
                 return column;
             }
 

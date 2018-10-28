@@ -23,6 +23,11 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Internal\BulkTools\**" />
+    <EmbeddedResource Remove="Internal\BulkTools\**" />
+    <None Remove="Internal\BulkTools\**" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Dapper" Version="1.50.5" />
     <PackageReference Include="Dapper.FluentMap" Version="1.6.0" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.5.0" />

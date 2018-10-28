@@ -1,4 +1,4 @@
-﻿using System.Data;
+﻿using System;
 using System.Linq;
 using Dapper.Nona.Abstractions;
 using Dapper.Nona.FluentMapping;
@@ -13,7 +13,7 @@ namespace Dapper.Nona.Resolvers
     public class NonaDataColumnResolver : IDataColumnResolver
     {
         /// <inheritdoc/>
-        public DataColumn ResolveDataColumn(NonaProperty propertyInfo)
+        public Tuple<string, Type> ResolveDataColumn(NonaProperty propertyInfo)
         {
             if (propertyInfo.Type == null)
                 return NonaMapper.Resolvers.Default.DataColumnResolver.ResolveDataColumn(propertyInfo);
@@ -26,7 +26,7 @@ namespace Dapper.Nona.Resolvers
 
             var propertyMaps = entityMap.PropertyMaps.Where(m => m.PropertyInfo.Name == propertyInfo.PropertyInfo.Name).ToList();
 
-            return propertyMaps.Count == 1 ? new DataColumn(propertyMaps[0].ColumnName, propertyMaps[0].PropertyInfo.PropertyType) : 
+            return propertyMaps.Count == 1 ? new Tuple<string, Type>(propertyMaps[0].ColumnName, propertyMaps[0].PropertyInfo.PropertyType) :
                 NonaMapper.Resolvers.Default.DataColumnResolver.ResolveDataColumn(propertyInfo);
         }
     }

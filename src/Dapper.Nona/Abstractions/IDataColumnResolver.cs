@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace Dapper.Nona.Abstractions
 {
@@ -15,7 +16,7 @@ namespace Dapper.Nona.Abstractions
         /// </summary>
         /// <param name="propertyInfo">The property information.</param>
         /// <returns></returns>
-        DataColumn ResolveDataColumn(NonaProperty propertyInfo);
+        Tuple<string, Type> ResolveDataColumn(NonaProperty propertyInfo);
         }
     
 }
