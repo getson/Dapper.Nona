@@ -29,6 +29,7 @@ namespace Dapper.Nona.IntegrationTests
                 using (var transaction = con.BeginTransaction())
                 {
                     con.BulkInsert(entities, transaction);
+                    transaction.Commit();
                 }
 
                 var productName = $"Product 100 {tag}";

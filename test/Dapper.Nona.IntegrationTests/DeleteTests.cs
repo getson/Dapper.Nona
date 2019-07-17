@@ -1,7 +1,9 @@
 ﻿using Dapper.Nona.IntegrationTests.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Dapper.Nona.IntegrationTests
@@ -11,39 +13,28 @@ namespace Dapper.Nona.IntegrationTests
     {
 
         [Fact]
-        public void DeleteList()
+        public async Task DeleteListAsync()
         {
             var listOfProduct = new List<Product2>
             {
                 new Product2
                 {
-                   ProductName="p1"
+                   ProductName=Guid.NewGuid().ToString()
                 },
                 new Product2
                 {
-                    ProductName="p2"
+                    ProductName=Guid.NewGuid().ToString()
                 }
             };
 
             using (var con = new SqlConnection(GetConnectionString()))
             {
-                var products = con.Select<Product2>(x => x.ProductName == "p1" || x.ProductName == "p2").ToList();
-                con.Delete(products);
-                con.Insert(listOfProduct);
-
+                await con.InsertAsync(listOfProduct);
             }
             using (var con = new SqlConnection(GetConnectionString()))
             {
-                var products = con.Select<Product2>(x => x.ProductName == "p1" || x.ProductName == "p2").ToList();
-                products[0].ProductName = "p1-updated!";
-                products[1].ProductName = "p2-updated!";
-
-                con.Update(products);
-
-                products = con.Select<Product2>(x=>x.ProductId==products[0].ProductId || x.ProductId==products[1].ProductId).ToList();
-
-                Assert.Equal("p1-updated!", products[0].ProductName);
-                Assert.Equal("p2-updated!", products[1].ProductName);
+                var products = (await con.SelectAsync<Product2>(x => x.ProductName == listOfProduct[0].ProductName || x.ProductName == listOfProduct[1].ProductName)).ToList();
+                Assert.Equal(listOfProduct.Count, products.Count);
             }
         }
 

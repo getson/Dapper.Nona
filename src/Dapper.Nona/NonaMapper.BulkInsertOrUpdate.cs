@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Dapper.Nona
@@ -37,83 +36,64 @@ namespace Dapper.Nona
             bool? outputIdentity = null
             ) where TEntity : class
         {
-            if (!entities.Any()) return;
+            if (!entities.Any())
+            {
+                return;
+            }
 
-            Dictionary<int, TEntity> outputIdentityDic = outputIdentity.HasValue && outputIdentity.Value ?
+            var outputIdentityDic = outputIdentity.HasValue && outputIdentity.Value ?
                 new Dictionary<int, TEntity>() : null;
 
             var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, outputIdentity).Shred(entities, bulkMetadata, null, outputIdentityDic);
 
             var sqlConnection = (SqlConnection)connection;
-            sqlConnection.Open();
 
-            if (transaction == null)
-            {
-                transaction = connection.BeginTransaction();
-            }
-
-            using (var trans = (SqlTransaction)transaction)
-            {
-                try
-                {
-                    var command = sqlConnection.CreateCommand();
-                    command.Connection = sqlConnection;
-                    command.Transaction = trans;
-                    command.CommandTimeout = 600;
-                    CheckTemporaryTableQuery(connection, transaction, bulkMetadata, true);
-                    //Creating temp table on database
-                    command.CommandText = bulkMetadata.TempTableQuery;
-                    command.ExecuteNonQuery();
-                    //Bulk copy into temp table
-                    BulkCopy<TEntity>(sqlConnection, trans, dataTable, sqlBulkCopyOptions,
+            var command = sqlConnection.CreateCommand();
+            command.Connection = sqlConnection;
+            var sqlTransaction = (SqlTransaction)transaction;
+            command.Transaction = sqlTransaction;
+            command.CommandTimeout = 600;
+            CheckTemporaryTableQuery(connection, transaction, bulkMetadata, true);
+            //Creating temp table on database
+            command.CommandText = bulkMetadata.TempTableQuery;
+            command.ExecuteNonQuery();
+            //Bulk copy into temp table
+            BulkCopy<TEntity>(sqlConnection, sqlTransaction, dataTable, sqlBulkCopyOptions,
                         bulkMetadata.Name, bulkCopyTimeout, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyEnableStreaming);
-                    // Updating destination table, and dropping temp table
-                    CheckInsertOrUpdateTableQuery(bulkMetadata);
+            // Updating destination table, and dropping temp table
+            CheckInsertOrUpdateTableQuery(bulkMetadata);
 
-                    string outputCreateTableQuery = outputIdentity.HasValue && outputIdentity.Value ?
-                        $"CREATE TABLE #{bulkMetadata.Name}InsertOutput(InternalId int, Id int); " : "";
-                    string outputIdentityQuery = outputIdentity.HasValue && outputIdentity.Value ?
-                        $"OUTPUT Source.InternalId, INSERTED.{bulkMetadata.IdentityColumn.Item1} INTO #{bulkMetadata.Name}InsertOutput(InternalId, {bulkMetadata.IdentityColumn.Item1}); " : ";";
-                    string deleteWhenNotMatchedQuery = deleteWhenNotMatched ?
-                        " WHEN NOT MATCHED BY SOURCE THEN DELETE " : " ";
-                    var query = $"{outputCreateTableQuery} {bulkMetadata.UpdateQuery} {deleteWhenNotMatchedQuery} {outputIdentityQuery} DROP TABLE #{bulkMetadata.Name};";
+            var outputCreateTableQuery = outputIdentity.HasValue && outputIdentity.Value ?
+                $"CREATE TABLE #{bulkMetadata.Name}InsertOutput(InternalId int, Id int); " : "";
+            var outputIdentityQuery = outputIdentity.HasValue && outputIdentity.Value ?
+                $"OUTPUT Source.InternalId, INSERTED.{bulkMetadata.IdentityColumn.Item1} INTO #{bulkMetadata.Name}InsertOutput(InternalId, {bulkMetadata.IdentityColumn.Item1}); " : ";";
+            var deleteWhenNotMatchedQuery = deleteWhenNotMatched ?
+                " WHEN NOT MATCHED BY SOURCE THEN DELETE " : " ";
+            var query = $"{outputCreateTableQuery} {bulkMetadata.UpdateQuery} {deleteWhenNotMatchedQuery} {outputIdentityQuery} DROP TABLE #{bulkMetadata.Name};";
 
-                    command.CommandText = query;
-                    command.ExecuteNonQuery();
+            command.CommandText = query;
+            command.ExecuteNonQuery();
 
-                    if (outputIdentity.HasValue && outputIdentity.Value)
+            if (outputIdentity.HasValue && outputIdentity.Value)
+            {
+                command.CommandText = $"SELECT InternalId, Id FROM #{bulkMetadata.Name}InsertOutput;";
+
+                using (var reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
                     {
-                        command.CommandText = $"SELECT InternalId, Id FROM #{bulkMetadata.Name}InsertOutput;";
-
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        if (outputIdentityDic.TryGetValue((int)reader[0], out var item))
                         {
-                            while (reader.Read())
-                            {
-                                if (outputIdentityDic.TryGetValue((int)reader[0], out var item))
-                                {
-                                    Type type = item.GetType();
-                                    PropertyInfo prop = type.GetProperty(bulkMetadata.IdentityColumn.Item1);
-                                    prop.SetValue(item, reader[1], null);
-                                }
-                            }
+                            var type = item.GetType();
+                            var prop = type.GetProperty(bulkMetadata.IdentityColumn.Item1);
+                            prop.SetValue(item, reader[1], null);
                         }
                     }
-
-                    command.CommandText = $"DROP TABLE #{bulkMetadata.Name}InsertOutput;"; 
-                    command.ExecuteNonQuery();
-
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-                finally
-                {
-                    sqlConnection.Close();
                 }
             }
+
+            command.CommandText = $"DROP TABLE #{bulkMetadata.Name}InsertOutput;";
+            command.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -146,10 +126,13 @@ namespace Dapper.Nona
             bool? outputIdentity = null
             ) where TEntity : class
         {
-            if (!entities.Any()) return;
+            if (!entities.Any())
+            {
+                return;
+            }
 
-            Dictionary<int, TEntity> outputIdentityDic = outputIdentity.HasValue && outputIdentity.Value ?
-                new Dictionary<int, TEntity>() : null;
+            var outputIdentityDic = outputIdentity.HasValue && outputIdentity.Value ?
+                        new Dictionary<int, TEntity>() : null;
 
             var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, outputIdentity).Shred(entities, bulkMetadata, null, outputIdentityDic);
 
@@ -178,11 +161,11 @@ namespace Dapper.Nona
                         bulkMetadata.Name, bulkCopyTimeout, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyEnableStreaming);
                     // Updating destination table, and dropping temp table
                     CheckInsertOrUpdateTableQuery(bulkMetadata);
-                    string outputCreateTableQuery = outputIdentity.HasValue && outputIdentity.Value ?
+                    var outputCreateTableQuery = outputIdentity.HasValue && outputIdentity.Value ?
                         $"CREATE TABLE #{bulkMetadata.Name}InsertOutput(InternalId int, Id int); " : "";
-                    string outputIdentityQuery = outputIdentity.HasValue && outputIdentity.Value ?
+                    var outputIdentityQuery = outputIdentity.HasValue && outputIdentity.Value ?
                         $"OUTPUT Source.InternalId, INSERTED.{bulkMetadata.IdentityColumn.Item1} INTO #{bulkMetadata.Name}InsertOutput(InternalId, {bulkMetadata.IdentityColumn.Item1}); " : ";";
-                    string deleteWhenNotMatchedQuery = deleteWhenNotMatched ?
+                    var deleteWhenNotMatchedQuery = deleteWhenNotMatched ?
                         " WHEN NOT MATCHED BY SOURCE THEN DELETE " : " ";
                     var query = $"{outputCreateTableQuery} {bulkMetadata.UpdateQuery} {deleteWhenNotMatchedQuery} {outputIdentityQuery} DROP TABLE #{bulkMetadata.Name};";
 
@@ -193,14 +176,14 @@ namespace Dapper.Nona
                     {
                         command.CommandText = $"SELECT InternalId, Id FROM #{bulkMetadata.Name}InsertOutput;";
 
-                        using (SqlDataReader reader = command.ExecuteReader())
+                        using (var reader = command.ExecuteReader())
                         {
                             while (reader.Read())
                             {
                                 if (outputIdentityDic.TryGetValue((int)reader[0], out var item))
                                 {
-                                    Type type = item.GetType();
-                                    PropertyInfo prop = type.GetProperty(bulkMetadata.IdentityColumn.Item1);
+                                    var type = item.GetType();
+                                    var prop = type.GetProperty(bulkMetadata.IdentityColumn.Item1);
                                     prop.SetValue(item, reader[1], null);
                                 }
                             }

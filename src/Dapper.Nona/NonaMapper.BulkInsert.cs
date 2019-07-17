@@ -32,39 +32,31 @@ namespace Dapper.Nona
             bool bulkCopyEnableStreaming = false
             ) where TEntity : class
         {
-            if (!entities.Any()) return;
-            
+            if (!entities.Any())
+            {
+                return;
+            }
+
             var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null);
 
             var sqlConnection = (SqlConnection)connection;
-            sqlConnection.Open();
-
-            if (transaction == null) transaction = connection.BeginTransaction();
-
             using (var bulkCopy = new SqlBulkCopy(sqlConnection, sqlBulkCopyOptions, (SqlTransaction)transaction))
             {
-                try
-                {
-                    bulkCopy.DestinationTableName = bulkMetadata.Name;
-                    bulkCopy.SetSettings(bulkCopyEnableStreaming, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyTimeout, rowsCopiedHandler);
 
-                    bulkCopy.WriteToServer(dataTable);
+                bulkCopy.DestinationTableName = bulkMetadata.Name;
+                bulkCopy.SetSettings
+                    (
+                        bulkCopyEnableStreaming,
+                        bulkCopyBatchSize,
+                        bulkCopyNotifyAfter,
+                        bulkCopyTimeout,
+                       (sender, eventArgs) => LogQuery<TEntity>("Inserted " + eventArgs.RowsCopied + " records.")
+                   );
 
-                    transaction.Commit();
-                    bulkCopy.Close();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-                finally
-                {
-                    sqlConnection.Close();
-                }
+                bulkCopy.WriteToServer(dataTable);
+                bulkCopy.Close();
+
             }
-
-            void rowsCopiedHandler(object sender, SqlRowsCopiedEventArgs eventArgs) => LogQuery<TEntity>("Inserted " + eventArgs.RowsCopied + " records.");
         }
 
         /// <summary>
@@ -93,14 +85,20 @@ namespace Dapper.Nona
             bool bulkCopyEnableStreaming = false
             ) where TEntity : class
         {
-            if (!entities.Any()) return;
+            if (!entities.Any())
+            {
+                return;
+            }
 
             var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null);
 
             var sqlConnection = (SqlConnection)connection;
             sqlConnection.Open();
 
-            if (transaction == null) transaction = connection.BeginTransaction();
+            if (transaction == null)
+            {
+                transaction = connection.BeginTransaction();
+            }
 
             using (var bulkCopy = new SqlBulkCopy(sqlConnection, sqlBulkCopyOptions, (SqlTransaction)transaction))
             {

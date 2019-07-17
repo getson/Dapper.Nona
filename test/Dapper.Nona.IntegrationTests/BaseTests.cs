@@ -10,7 +10,7 @@ namespace Dapper.Nona.IntegrationTests
 {
    public class BaseTests
    {
-       private static object _locker = new object(); 
+       protected static object Locker = new object(); 
         static BaseTests()
         {
             DefaultTypeMap.MatchNamesWithUnderscores = true;
@@ -26,7 +26,7 @@ namespace Dapper.Nona.IntegrationTests
 
         protected void DeleteAll()
         {
-            lock(_locker)
+            lock(Locker)
             {
                 using (var con = new SqlConnection(GetConnectionString()))
                 {

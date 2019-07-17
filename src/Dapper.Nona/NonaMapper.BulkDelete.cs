@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Dapper.Nona
@@ -33,45 +32,41 @@ namespace Dapper.Nona
             bool bulkCopyEnableStreaming = false
             ) where TEntity : class
         {
-            if (!entities.Any()) return;
+            if (!entities.Any())
+            {
+                return;
+            }
 
             var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null, identifierOnly: true);
 
             var sqlConnection = (SqlConnection)connection;
             sqlConnection.Open();
 
-            if (transaction == null) transaction = connection.BeginTransaction();
+            if (transaction == null)
+            {
+                transaction = connection.BeginTransaction();
+            }
 
             using (var trans = (SqlTransaction)transaction)
             {
-                try
-                {
-                    var command = sqlConnection.CreateCommand();
-                    command.Connection = sqlConnection;
-                    command.Transaction = trans;
-                    command.CommandTimeout = 600;
-                    CheckTemporaryTableQuery(connection, transaction, bulkMetadata, false);
-                    //Creating temp table on database
-                    command.CommandText = bulkMetadata.TempTableQuery;
-                    command.ExecuteNonQuery();
-                    //Bulk copy into temp table
-                    BulkCopy<TEntity>(sqlConnection, (SqlTransaction)transaction, dataTable, sqlBulkCopyOptions,
-                        bulkMetadata.Name, bulkCopyTimeout, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyEnableStreaming);
-                    // Updating destination table, and dropping temp table
-                    CheckDeleteTableQuery(bulkMetadata);
-                    command.CommandText = bulkMetadata.DeleteQuery;
-                    command.ExecuteNonQuery();
-                    transaction.Commit();
-                }
-                catch (Exception)
-                {
-                    transaction.Rollback();
-                    throw;
-                }
-                finally
-                {
-                    sqlConnection.Close();
-                }
+
+                var command = sqlConnection.CreateCommand();
+                command.Connection = sqlConnection;
+                command.Transaction = trans;
+                command.CommandTimeout = 600;
+                CheckTemporaryTableQuery(connection, transaction, bulkMetadata, false);
+                //Creating temp table on database
+                command.CommandText = bulkMetadata.TempTableQuery;
+                command.ExecuteNonQuery();
+                //Bulk copy into temp table
+                BulkCopy<TEntity>(sqlConnection, (SqlTransaction)transaction, dataTable, sqlBulkCopyOptions,
+                    bulkMetadata.Name, bulkCopyTimeout, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyEnableStreaming);
+                // Updating destination table, and dropping temp table
+                CheckDeleteTableQuery(bulkMetadata);
+                command.CommandText = bulkMetadata.DeleteQuery;
+                command.ExecuteNonQuery();
+                transaction.Commit();
+
             }
         }
 
@@ -99,14 +94,20 @@ namespace Dapper.Nona
             bool bulkCopyEnableStreaming = false
             ) where TEntity : class
         {
-            if (!entities.Any()) return;
+            if (!entities.Any())
+            {
+                return;
+            }
 
             var dataTable = GetTemporaryDataTable(typeof(TEntity), out var bulkMetadata, false).Shred(entities, bulkMetadata, null, identifierOnly: true);
 
             var sqlConnection = (SqlConnection)connection;
             sqlConnection.Open();
 
-            if (transaction == null) transaction = connection.BeginTransaction();
+            if (transaction == null)
+            {
+                transaction = connection.BeginTransaction();
+            }
 
             using (var trans = (SqlTransaction)transaction)
             {

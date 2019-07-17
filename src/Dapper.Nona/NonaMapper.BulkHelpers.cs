@@ -120,12 +120,17 @@ namespace Dapper.Nona
             using (var bulkCopy = new SqlBulkCopy(sqlConnection, sqlBulkCopyOptions, transaction))
             {
                 bulkCopy.DestinationTableName = destinationTableName;
-                bulkCopy.SetSettings(bulkCopyEnableStreaming, bulkCopyBatchSize, bulkCopyNotifyAfter, bulkCopyTimeout, rowsCopiedHandler);
+                bulkCopy.SetSettings
+                    (
+                        bulkCopyEnableStreaming,
+                        bulkCopyBatchSize,
+                        bulkCopyNotifyAfter,
+                        bulkCopyTimeout,
+                        (sender, eventArgs) => LogQuery<TEntity>("Inserted " + eventArgs.RowsCopied + " records.")
+                    );
 
                 await bulkCopy.WriteToServerAsync(dataTable);
             }
-
-            void rowsCopiedHandler(object sender, SqlRowsCopiedEventArgs eventArgs) => LogQuery<TEntity>("Inserted " + eventArgs.RowsCopied + " records.");
         }
 
         /// <summary>
@@ -270,7 +275,10 @@ namespace Dapper.Nona
                 {
                     values[index++] = bulkRuntimeTypeHandleMetadata.Columns[index].Item1 == bulkRuntimeTypeHandleMetadata.IdentityColumn.Item1 ? pInfo.GetValue(instance, null) : null;
                 }
-                else values[index++] = pInfo.GetValue(instance, null);
+                else
+                {
+                    values[index++] = pInfo.GetValue(instance, null);
+                }
             }
 
             return values;
@@ -322,9 +330,11 @@ namespace Dapper.Nona
         private static void CheckUpdateTableQuery(BulkRuntimeTypeHandleMetadata bulkMetadata)
         {
             if (!string.IsNullOrEmpty(bulkMetadata.UpdateQuery))
+            {
                 return;
+            }
 
-            string query = $@"MERGE INTO {bulkMetadata.Name} WITH (HOLDLOCK) AS Target 
+            var query = $@"MERGE INTO {bulkMetadata.Name} WITH (HOLDLOCK) AS Target 
                               USING #{bulkMetadata.Name} AS Source 
                               {BuildJoinConditionsForUpdateOrInsert(bulkMetadata)} 
                               WHEN MATCHED THEN {BuildUpdateSet(bulkMetadata)}; 
@@ -340,9 +350,11 @@ namespace Dapper.Nona
         private static void CheckInsertOrUpdateTableQuery(BulkRuntimeTypeHandleMetadata bulkMetadata)
         {
             if (!string.IsNullOrEmpty(bulkMetadata.InsertOrUpdateQuery))
+            {
                 return;
-            
-            string query = $@"MERGE INTO {bulkMetadata.Name} WITH (HOLDLOCK) AS Target 
+            }
+
+            var query = $@"MERGE INTO {bulkMetadata.Name} WITH (HOLDLOCK) AS Target 
                             USING #{bulkMetadata.Name} AS Source 
                             {BuildJoinConditionsForUpdateOrInsert(bulkMetadata)} 
                             WHEN MATCHED THEN {BuildUpdateSet(bulkMetadata)}
@@ -358,9 +370,11 @@ namespace Dapper.Nona
         private static void CheckDeleteTableQuery(BulkRuntimeTypeHandleMetadata bulkMetadata)
         {
             if (!string.IsNullOrEmpty(bulkMetadata.DeleteQuery))
+            {
                 return;
+            }
 
-            string query = $@"MERGE INTO {bulkMetadata.Name} WITH (HOLDLOCK) AS Target 
+            var query = $@"MERGE INTO {bulkMetadata.Name} WITH (HOLDLOCK) AS Target 
                             USING #{bulkMetadata.Name} AS Source 
                             {BuildJoinConditionsForUpdateOrInsert(bulkMetadata)} 
                             WHEN MATCHED THEN DELETE; DROP TABLE #{bulkMetadata.Name};";
@@ -373,8 +387,10 @@ namespace Dapper.Nona
         /// </summary>
         /// <param name="bulkMetadata">The bulk metadata.</param>
         /// <returns></returns>
-        private static string BuildJoinConditionsForUpdateOrInsert(BulkRuntimeTypeHandleMetadata bulkMetadata) => 
-            $"ON {bulkMetadata.Name}.[{bulkMetadata.IdentityColumn.Item1}] = #{bulkMetadata.Name}.[{bulkMetadata.IdentityColumn.Item1}] ";
+        private static string BuildJoinConditionsForUpdateOrInsert(BulkRuntimeTypeHandleMetadata bulkMetadata)
+        {
+            return $"ON {bulkMetadata.Name}.[{bulkMetadata.IdentityColumn.Item1}] = #{bulkMetadata.Name}.[{bulkMetadata.IdentityColumn.Item1}] ";
+        }
 
         /// <summary>
         /// Builds the update set.
@@ -383,8 +399,8 @@ namespace Dapper.Nona
         /// <returns></returns>
         private static string BuildUpdateSet(BulkRuntimeTypeHandleMetadata bulkMetadata)
         {
-            StringBuilder command = new StringBuilder();
-            List<string> paramsSeparated = new List<string>();
+            var command = new StringBuilder();
+            var paramsSeparated = new List<string>();
 
             command.Append("UPDATE SET ");
 
@@ -393,7 +409,9 @@ namespace Dapper.Nona
                 if ((bulkMetadata.IdentityColumn != null && column != bulkMetadata.IdentityColumn) || bulkMetadata.IdentityColumn == null)
                 {
                     if (column.Item1 != "InternalId")
+                    {
                         paramsSeparated.Add($"{bulkMetadata.Name}.[{column.Item1 }] = #{bulkMetadata.Name}.[{column.Item1 }]");
+                    }
                 }
             }
 
@@ -409,8 +427,8 @@ namespace Dapper.Nona
         /// <returns></returns>
         private static string BuildInsertSet(BulkRuntimeTypeHandleMetadata bulkMetadata)
         {
-            StringBuilder command = new StringBuilder();
-            List<string> insertColumns = new List<string>();
+            var command = new StringBuilder();
+            var insertColumns = new List<string>();
 
             command.Append("INSERT (");
 
@@ -419,7 +437,9 @@ namespace Dapper.Nona
                 if ((bulkMetadata.IdentityColumn != null && column != bulkMetadata.IdentityColumn) || bulkMetadata.IdentityColumn == null)
                 {
                     if (column.Item1 != "InternalId")
+                    {
                         insertColumns.Add($"[{column.Item1 }]");
+                    }
                 }
             }
 
